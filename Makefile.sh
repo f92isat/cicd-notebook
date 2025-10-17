@@ -1,4 +1,4 @@
-# Makefile para proyecto MLOps
+# Makefile 
 
 # Instalar dependencias
 install:
@@ -16,8 +16,9 @@ train:
 # Evaluar modelo y generar reporte
 eval:
 	python eval.py
-	cat /Results/metrics.txt >> report.md
-	echo "\n## Confusion Matrix Plot >> report.md"
+	cat Results/metrics.txt >> report.md
+	echo "" >> report.md
+	echo "## Confusion Matrix Plot" >> report.md
 	echo "![Confusion Matrix](./Results/model_results.png)" >> report.md
 	cml comment create report.md
 
@@ -25,6 +26,7 @@ eval:
 update-branch:
 	git config --global user.name '$(USER_NAME)'
 	git config --global user.email '$(USER_EMAIL)'
+	git add Results/
 	git commit -am "Update with new results"
 	git push --force origin HEAD:update
 
@@ -43,6 +45,5 @@ push-hub:
 # Desplegar en HuggingFace
 deploy:
 	pip install -U "huggingface_hub[cli]"
-	huggingface-cli login --token $(HF)
+	huggingface-cli login --token $(HF_TOKEN)
 	huggingface-cli upload LuisaTirado/Drug-Classification ./Model --repo-type=space --commit-message="Sync Model"
-```
